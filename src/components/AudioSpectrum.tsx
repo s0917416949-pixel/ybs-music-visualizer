@@ -1,0 +1,92 @@
+import React from 'react';
+import {staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {useAudioData, visualizeAudio} from '@remotion/media-utils';
+
+const AUDIO = staticFile('song.wav');
+
+const getSectionBoost = (seconds: number) => {
+  if (seconds < 62) return 0.78;
+  if (seconds < 96) return 1.0;
+  if (seconds < 115) return 0.82;
+  if (seconds < 145) return 1.08;
+  if (seconds < 164) return 0.62;
+  if (seconds < 169) return 0.72;
+  if (seconds < 174) return 1.02;
+  if (seconds < 194) return 1.12;
+  if (seconds < 210) return 1.28;
+  if (seconds < 228) return 0.72;
+  return 0.42;
+};
+
+export const AudioSpectrum: React.FC = () => {
+  const frame = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const audioData = useAudioData(AUDIO);
+
+  if (!audioData) return null;
+
+  const values = visualizeAudio({
+    fps,
+    frame,
+    audioData,
+    numberOfSamples: 96,
+  });
+
+  const seconds = frame / fps;
+  const boost = getSectionBoost(seconds);
+  const cx = 960;
+  const cy = 470;
+  const baseRadius = 205;
+
+  return (
+    <svg
+      width="1920"
+      height="1080"
+      viewBox="0 0 1920 1080"
+      style={{position: 'absolute', inset: 0}}
+    >
+      <defs>
+        <filter id="spectrumGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="7" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+      <circle
+        cx={cx}
+        cy={cy}
+        r={baseRadius}
+        fill="rgba(4,12,22,0.18)"
+        stroke="rgba(232,244,255,0.38)"
+        strokeWidth={2}
+      />
+      {values.map((v, i) => {
+        const angle = (Math.PI * 2 * i) / values.length - Math.PI / 2;
+        const amplitude = Math.min(1, v * 2.9 * boost);
+        const length = 12 + amplitude * 88;
+        const inner = baseRadius + 8;
+        const outer = inner + length;
+        const x1 = cx + Math.cos(angle) * inner;
+        const y1 = cy + Math.sin(angle) * inner;
+        const x2 = cx + Math.cos(angle) * outer;
+        const y2 = cy + Math.sin(angle) * outer;
+        const alpha = 0.28 + amplitude * 0.72;
+        return (
+          <line
+            key={i}
+            x1={x1}
+            y1={y1}
+            x2={x2}
+            y2={y2}
+            stroke={`rgba(236,246,255,${alpha})`}
+            strokeWidth={2.3 + amplitude * 2.2}
+            strokeLinecap="round"
+            filter="url(#spectrumGlow)"
+          />
+        );
+      })}
+    </svg>
+  );
+};
