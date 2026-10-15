@@ -29,7 +29,7 @@ export const AudioSpectrum: React.FC = () => {
     fps,
     frame,
     audioData,
-    numberOfSamples: 96,
+    numberOfSamples: 128,
   });
 
   const seconds = frame / fps;
