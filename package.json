@@ -8,6 +8,7 @@
     "render": "remotion render src/index.ts YBSMusicVisualizer out/final-vol06.mp4 --codec=h264"
   },
   "dependencies": {
+    "@fontsource/noto-sans-tc": "5.3.1",
     "@remotion/captions": "4.0.535",
     "@remotion/cli": "4.0.535",
     "@remotion/google-fonts": "4.0.535",
