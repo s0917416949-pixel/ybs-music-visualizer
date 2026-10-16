@@ -13,6 +13,7 @@ import {AudioSpectrum} from './components/AudioSpectrum';
 import {EndCard} from './components/EndCard';
 import {Lyrics} from './components/Lyrics';
 import {OpeningTitle} from './components/OpeningTitle';
+import {ybsFontFamily} from './fonts';
 
 export const YBSMusicVisualizer: React.FC<{
   title: string;
@@ -50,7 +51,7 @@ export const YBSMusicVisualizer: React.FC<{
   });
 
   return (
-    <AbsoluteFill style={{backgroundColor: '#050b12', overflow: 'hidden'}}>
+    <AbsoluteFill style={{backgroundColor: '#050b12', overflow: 'hidden', fontFamily: ybsFontFamily}}>
       <Audio src={staticFile('song.wav')} />
 
       <Img
@@ -79,6 +80,20 @@ export const YBSMusicVisualizer: React.FC<{
         }}
       />
 
+      {/* Hide the baked-in static spectrum from background.png while preserving the circular visual concept. */}
+      <div
+        style={{
+          position: 'absolute',
+          left: 960 - 335,
+          top: 470 - 335,
+          width: 670,
+          height: 670,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(8,18,30,0.96) 0%, rgba(8,18,30,0.90) 58%, rgba(8,18,30,0.70) 76%, rgba(8,18,30,0) 100%)',
+          boxShadow: '0 0 80px rgba(0,0,0,0.28) inset',
+        }}
+      />
+
       <div style={{opacity: spectrumOpacity}}>
         <AudioSpectrum />
       </div>
@@ -94,6 +109,7 @@ export const YBSMusicVisualizer: React.FC<{
           letterSpacing: '0.14em',
           color: 'rgba(245,247,248,0.62)',
           textShadow: '0 2px 12px rgba(0,0,0,0.75)',
+          fontFamily: ybsFontFamily,
         }}
       >
         {seconds > 6 ? series : ''}
@@ -105,10 +121,11 @@ export const YBSMusicVisualizer: React.FC<{
           top: 44,
           right: 58,
           fontSize: 22,
-          fontWeight: 650,
+          fontWeight: 700,
           letterSpacing: '0.24em',
           color: 'rgba(250,250,247,0.82)',
           textShadow: '0 2px 12px rgba(0,0,0,0.75)',
+          fontFamily: ybsFontFamily,
         }}
       >
         {seconds > 6 ? 'Yun' : ''}
