@@ -24,7 +24,7 @@ export const YBSMusicVisualizer: React.FC<{
   const {fps} = useVideoConfig();
   const seconds = frame / fps;
 
-  const backgroundScale = interpolate(frame, [0, 231.88 * fps], [1.02, 1.075], {
+  const backgroundScale = interpolate(frame, [0, 231.88 * fps], [1.22, 1.28], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.bezier(0.25, 0.1, 0.25, 1),
@@ -50,46 +50,36 @@ export const YBSMusicVisualizer: React.FC<{
     extrapolateRight: 'clamp',
   });
 
-  const backgroundFilter = `brightness(${0.72 + dawn * 0.48 - bridgeDim}) saturate(${0.9 + dawn * 0.28}) contrast(1.04)`;
-
   return (
     <AbsoluteFill style={{backgroundColor: '#050b12', overflow: 'hidden', fontFamily: ybsFontFamily}}>
       <Audio src={staticFile('song.wav')} />
 
+      {/* Use the original artwork only as a blurred color/atmosphere source.
+          The baked-in static ring is intentionally defocused so the only crisp ring
+          on screen is the live AudioSpectrum. */}
       <Img
         src={staticFile('background.png')}
         style={{
           position: 'absolute',
-          inset: -40,
-          width: 2000,
-          height: 1160,
+          inset: -120,
+          width: 2160,
+          height: 1320,
           objectFit: 'cover',
           scale: backgroundScale,
-          filter: backgroundFilter,
-        }}
-      />
-
-      {/* Blend away the baked-in static ring without creating a visible solid circle. */}
-      <Img
-        src={staticFile('background.png')}
-        style={{
-          position: 'absolute',
-          inset: -70,
-          width: 2060,
-          height: 1220,
-          objectFit: 'cover',
-          scale: backgroundScale * 1.015,
-          filter: `${backgroundFilter} blur(28px)`,
-          WebkitMaskImage:
-            'radial-gradient(circle at 50% 43.5%, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 56%, rgba(0,0,0,0.92) 66%, rgba(0,0,0,0.45) 75%, rgba(0,0,0,0) 86%)',
-          maskImage:
-            'radial-gradient(circle at 50% 43.5%, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 56%, rgba(0,0,0,0.92) 66%, rgba(0,0,0,0.45) 75%, rgba(0,0,0,0) 86%)',
+          filter: `blur(58px) brightness(${0.68 + dawn * 0.42 - bridgeDim}) saturate(${1.02 + dawn * 0.24}) contrast(1.06)`,
         }}
       />
 
       <AbsoluteFill
         style={{
-          background: `linear-gradient(180deg, rgba(2,8,16,${0.34 - dawn * 0.12}) 0%, rgba(3,10,18,0.08) 46%, rgba(2,6,12,0.58) 100%)`,
+          background:
+            'radial-gradient(circle at 50% 43%, rgba(10,24,38,0.10) 0%, rgba(5,12,22,0.18) 38%, rgba(2,7,14,0.58) 100%)',
+        }}
+      />
+
+      <AbsoluteFill
+        style={{
+          background: `linear-gradient(180deg, rgba(2,8,16,${0.30 - dawn * 0.10}) 0%, rgba(3,10,18,0.08) 46%, rgba(2,6,12,0.60) 100%)`,
         }}
       />
 
