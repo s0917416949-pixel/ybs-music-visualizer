@@ -1,5 +1,6 @@
 import React from 'react';
 import {Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import {ybsFontFamily} from '../fonts';
 
 export const OpeningTitle: React.FC<{
   title: string;
@@ -33,14 +34,11 @@ export const OpeningTitle: React.FC<{
         color: '#f8f5ee',
         textShadow: '0 4px 26px rgba(0,0,0,0.9)',
         pointerEvents: 'none',
+        fontFamily: ybsFontFamily,
       }}
     >
-      <div style={{fontSize: 28, letterSpacing: '0.22em', marginBottom: 22, opacity: 0.9}}>
-        {series}
-      </div>
-      <div style={{fontSize: 68, fontWeight: 650, letterSpacing: '0.06em', marginBottom: 28}}>
-        《{title}》
-      </div>
+      <div style={{fontSize: 28, letterSpacing: '0.22em', marginBottom: 22, opacity: 0.9}}>{series}</div>
+      <div style={{fontSize: 68, fontWeight: 700, letterSpacing: '0.06em', marginBottom: 28}}>《{title}》</div>
       <div style={{fontSize: 30, letterSpacing: '0.3em', opacity: 0.92}}>{artist}</div>
     </div>
   );
