@@ -3,7 +3,6 @@ import {Audio} from '@remotion/media';
 import {
   AbsoluteFill,
   Easing,
-  Img,
   interpolate,
   staticFile,
   useCurrentFrame,
@@ -24,12 +23,6 @@ export const YBSMusicVisualizer: React.FC<{
   const {fps} = useVideoConfig();
   const seconds = frame / fps;
 
-  const backgroundScale = interpolate(frame, [0, 231.88 * fps], [1.22, 1.28], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-    easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-  });
-
   const dawn = interpolate(seconds, [0, 145, 174, 210, 231.8], [0.02, 0.10, 0.22, 0.42, 0.5], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
@@ -45,7 +38,20 @@ export const YBSMusicVisualizer: React.FC<{
     extrapolateRight: 'clamp',
   });
 
-  const spectrumOpacity = interpolate(seconds, [0, 2.5, 224, 231.5], [0.45, 1, 1, 0], {
+  // Keep the one real audio spectrum visible from the first frame.
+  const spectrumOpacity = interpolate(seconds, [0, 0.8, 224, 231.5], [0.86, 1, 1, 0], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+
+  // Corner branding fades in after the opening title instead of appearing as a hard 6-second switch.
+  const cornerOpacity = interpolate(seconds, [5.2, 6.8], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+    easing: Easing.bezier(0.16, 1, 0.3, 1),
+  });
+
+  const ambientDrift = interpolate(frame, [0, 231.88 * fps], [-2, 3], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
@@ -54,39 +60,36 @@ export const YBSMusicVisualizer: React.FC<{
     <AbsoluteFill style={{backgroundColor: '#050b12', overflow: 'hidden', fontFamily: ybsFontFamily}}>
       <Audio src={staticFile('song.wav')} />
 
-      {/* Use the original artwork only as a blurred color/atmosphere source.
-          The baked-in static ring is intentionally defocused so the only crisp ring
-          on screen is the live AudioSpectrum. */}
-      <Img
-        src={staticFile('background.png')}
+      {/* Pure programmatic cinematic background. No background.png is shown, so no baked-in ring can remain. */}
+      <AbsoluteFill
         style={{
-          position: 'absolute',
-          inset: -120,
-          width: 2160,
-          height: 1320,
-          objectFit: 'cover',
-          scale: backgroundScale,
-          filter: `blur(58px) brightness(${0.68 + dawn * 0.42 - bridgeDim}) saturate(${1.02 + dawn * 0.24}) contrast(1.06)`,
+          background: `linear-gradient(135deg,
+            rgb(${Math.round(4 + dawn * 10)}, ${Math.round(13 + dawn * 12)}, ${Math.round(25 + dawn * 16)}) 0%,
+            rgb(${Math.round(7 + dawn * 13)}, ${Math.round(22 + dawn * 16)}, ${Math.round(37 + dawn * 18)}) 42%,
+            rgb(${Math.round(12 + dawn * 18)}, ${Math.round(25 + dawn * 18)}, ${Math.round(38 + dawn * 15)}) 70%,
+            rgb(${Math.round(4 + dawn * 8)}, ${Math.round(10 + dawn * 8)}, ${Math.round(18 + dawn * 10)}) 100%)`,
+          filter: `brightness(${1 - bridgeDim * 0.55})`,
         }}
       />
 
       <AbsoluteFill
         style={{
-          background:
-            'radial-gradient(circle at 50% 43%, rgba(10,24,38,0.10) 0%, rgba(5,12,22,0.18) 38%, rgba(2,7,14,0.58) 100%)',
-        }}
-      />
-
-      <AbsoluteFill
-        style={{
-          background: `linear-gradient(180deg, rgba(2,8,16,${0.30 - dawn * 0.10}) 0%, rgba(3,10,18,0.08) 46%, rgba(2,6,12,0.60) 100%)`,
-        }}
-      />
-
-      <AbsoluteFill
-        style={{
-          background: `radial-gradient(circle at 50% 39%, rgba(255,204,142,${dawn * 0.18 + finalBloom}) 0%, rgba(255,185,116,${dawn * 0.07}) 28%, rgba(0,0,0,0) 62%)`,
+          translate: `${ambientDrift}% 0`,
+          scale: 1.08,
+          background: `radial-gradient(ellipse 66% 54% at 66% 31%,
+            rgba(255,198,133,${0.035 + dawn * 0.13 + finalBloom * 0.34}) 0%,
+            rgba(218,154,103,${0.018 + dawn * 0.05}) 42%,
+            rgba(0,0,0,0) 78%)`,
           mixBlendMode: 'screen',
+        }}
+      />
+
+      <AbsoluteFill
+        style={{
+          background: `linear-gradient(180deg,
+            rgba(0,4,10,${0.14 + bridgeDim * 0.32}) 0%,
+            rgba(0,4,10,0.02) 42%,
+            rgba(0,3,8,0.48) 100%)`,
         }}
       />
 
@@ -106,9 +109,10 @@ export const YBSMusicVisualizer: React.FC<{
           color: 'rgba(245,247,248,0.62)',
           textShadow: '0 2px 12px rgba(0,0,0,0.75)',
           fontFamily: ybsFontFamily,
+          opacity: cornerOpacity,
         }}
       >
-        {seconds > 6 ? series : ''}
+        {series}
       </div>
 
       <div
@@ -122,9 +126,10 @@ export const YBSMusicVisualizer: React.FC<{
           color: 'rgba(250,250,247,0.82)',
           textShadow: '0 2px 12px rgba(0,0,0,0.75)',
           fontFamily: ybsFontFamily,
+          opacity: cornerOpacity,
         }}
       >
-        {seconds > 6 ? 'Yun' : ''}
+        Yun
       </div>
 
       <Lyrics />
