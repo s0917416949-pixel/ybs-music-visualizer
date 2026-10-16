@@ -73,8 +73,7 @@ export const YBSMusicVisualizer: React.FC<{
         }}
       />
 
-      {/* Restored blurred memory background. Keep it dark and soft so the circular
-          artwork and live spectrum remain the clear focal point. */}
+      {/* Blurred background only. This layer must never affect the center artwork. */}
       <AbsoluteFill style={{overflow: 'hidden'}}>
         <Img
           src={staticFile('background.png')}
@@ -108,6 +107,23 @@ export const YBSMusicVisualizer: React.FC<{
             rgba(0,4,10,${0.18 + bridgeDim * 0.34}) 0%,
             rgba(0,4,10,0.08) 42%,
             rgba(0,3,8,0.56) 100%)`,
+        }}
+      />
+
+      {/* Independent sharp center artwork. It is intentionally outside the blurred
+          background and outside AudioSpectrum so it stays sharp for the full song. */}
+      <Img
+        src={staticFile('center-circle.png')}
+        style={{
+          position: 'absolute',
+          left: 654,
+          top: 164,
+          width: 612,
+          height: 612,
+          objectFit: 'cover',
+          borderRadius: '50%',
+          filter: 'none',
+          opacity: 1,
         }}
       />
 
