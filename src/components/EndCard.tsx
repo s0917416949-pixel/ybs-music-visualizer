@@ -1,5 +1,6 @@
 import React from 'react';
 import {Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import {ybsFontFamily} from '../fonts';
 
 export const EndCard: React.FC = () => {
   const frame = useCurrentFrame();
@@ -28,6 +29,7 @@ export const EndCard: React.FC = () => {
         color: '#faf7ef',
         background: 'rgba(5,11,18,0.22)',
         textShadow: '0 4px 24px rgba(0,0,0,0.8)',
+        fontFamily: ybsFontFamily,
       }}
     >
       <div style={{fontSize: 54, lineHeight: 1.55, letterSpacing: '0.08em', fontWeight: 600}}>
