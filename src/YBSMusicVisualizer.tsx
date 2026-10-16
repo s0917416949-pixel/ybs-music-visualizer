@@ -2,7 +2,7 @@ import React from 'react';
 import {Audio} from '@remotion/media';
 import {
   AbsoluteFill,
-  Easing,
+  Img,
   interpolate,
   staticFile,
   useCurrentFrame,
@@ -48,6 +48,16 @@ export const YBSMusicVisualizer: React.FC<{
     extrapolateRight: 'clamp',
   });
 
+  const backgroundScale = interpolate(seconds, [0, 231.88], [1.12, 1.18], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+
+  const backgroundX = interpolate(seconds, [0, 231.88], [-1.5, 1.5], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+
   return (
     <AbsoluteFill style={{backgroundColor: '#050b12', overflow: 'hidden', fontFamily: ybsFontFamily}}>
       <Audio src={staticFile('song.wav')} />
@@ -62,6 +72,22 @@ export const YBSMusicVisualizer: React.FC<{
           filter: `brightness(${1 - bridgeDim * 0.55})`,
         }}
       />
+
+      {/* Restored blurred memory background. Keep it dark and soft so the circular
+          artwork and live spectrum remain the clear focal point. */}
+      <AbsoluteFill style={{overflow: 'hidden'}}>
+        <Img
+          src={staticFile('background.png')}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            transform: `translateX(${backgroundX}%) scale(${backgroundScale})`,
+            filter: `blur(22px) brightness(${0.30 + dawn * 0.08 - bridgeDim * 0.08}) saturate(${0.68 + dawn * 0.10}) contrast(1.03)`,
+            opacity: 0.62,
+          }}
+        />
+      </AbsoluteFill>
 
       <AbsoluteFill
         style={{
@@ -79,9 +105,9 @@ export const YBSMusicVisualizer: React.FC<{
       <AbsoluteFill
         style={{
           background: `linear-gradient(180deg,
-            rgba(0,4,10,${0.14 + bridgeDim * 0.32}) 0%,
-            rgba(0,4,10,0.02) 42%,
-            rgba(0,3,8,0.48) 100%)`,
+            rgba(0,4,10,${0.18 + bridgeDim * 0.34}) 0%,
+            rgba(0,4,10,0.08) 42%,
+            rgba(0,3,8,0.56) 100%)`,
         }}
       />
 
