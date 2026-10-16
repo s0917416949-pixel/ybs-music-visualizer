@@ -1,8 +1,5 @@
-import {loadFont} from '@remotion/google-fonts/NotoSansTC';
+import '@fontsource/noto-sans-tc/400.css';
+import '@fontsource/noto-sans-tc/600.css';
+import '@fontsource/noto-sans-tc/700.css';
 
-const loaded = loadFont('normal', {
-  weights: ['400', '600', '700'],
-  subsets: ['chinese-traditional', 'latin'],
-});
-
-export const ybsFontFamily = loaded.fontFamily;
+export const ybsFontFamily = '"Noto Sans TC", sans-serif';
