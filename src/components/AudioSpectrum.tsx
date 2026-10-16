@@ -36,7 +36,7 @@ export const AudioSpectrum: React.FC = () => {
   const boost = getSectionBoost(seconds);
   const cx = 960;
   const cy = 470;
-  const baseRadius = 205;
+  const baseRadius = 300;
 
   return (
     <svg
@@ -57,8 +57,8 @@ export const AudioSpectrum: React.FC = () => {
       {values.map((v, i) => {
         const angle = (Math.PI * 2 * i) / values.length - Math.PI / 2;
         const amplitude = Math.min(1, v * 2.9 * boost);
-        const length = 12 + amplitude * 88;
-        const inner = baseRadius + 8;
+        const length = 10 + amplitude * 96;
+        const inner = baseRadius + 6;
         const outer = inner + length;
         const x1 = cx + Math.cos(angle) * inner;
         const y1 = cy + Math.sin(angle) * inner;
