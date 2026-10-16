@@ -38,17 +38,9 @@ export const YBSMusicVisualizer: React.FC<{
     extrapolateRight: 'clamp',
   });
 
-  // Keep the one real audio spectrum visible from the first frame.
   const spectrumOpacity = interpolate(seconds, [0, 0.8, 224, 231.5], [0.86, 1, 1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
-  });
-
-  // Corner branding fades in after the opening title instead of appearing as a hard 6-second switch.
-  const cornerOpacity = interpolate(seconds, [5.2, 6.8], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-    easing: Easing.bezier(0.16, 1, 0.3, 1),
   });
 
   const ambientDrift = interpolate(frame, [0, 231.88 * fps], [-2, 3], {
@@ -60,7 +52,6 @@ export const YBSMusicVisualizer: React.FC<{
     <AbsoluteFill style={{backgroundColor: '#050b12', overflow: 'hidden', fontFamily: ybsFontFamily}}>
       <Audio src={staticFile('song.wav')} />
 
-      {/* Pure programmatic cinematic background. No background.png is shown, so no baked-in ring can remain. */}
       <AbsoluteFill
         style={{
           background: `linear-gradient(135deg,
@@ -76,9 +67,10 @@ export const YBSMusicVisualizer: React.FC<{
         style={{
           translate: `${ambientDrift}% 0`,
           scale: 1.08,
-          background: `radial-gradient(ellipse 66% 54% at 66% 31%,
-            rgba(255,198,133,${0.035 + dawn * 0.13 + finalBloom * 0.34}) 0%,
-            rgba(218,154,103,${0.018 + dawn * 0.05}) 42%,
+          background: `linear-gradient(110deg,
+            rgba(0,0,0,0) 0%,
+            rgba(255,198,133,${0.018 + dawn * 0.045 + finalBloom * 0.12}) 46%,
+            rgba(218,154,103,${0.025 + dawn * 0.065 + finalBloom * 0.18}) 58%,
             rgba(0,0,0,0) 78%)`,
           mixBlendMode: 'screen',
         }}
@@ -109,7 +101,7 @@ export const YBSMusicVisualizer: React.FC<{
           color: 'rgba(245,247,248,0.62)',
           textShadow: '0 2px 12px rgba(0,0,0,0.75)',
           fontFamily: ybsFontFamily,
-          opacity: cornerOpacity,
+          opacity: 0.72,
         }}
       >
         {series}
@@ -126,7 +118,7 @@ export const YBSMusicVisualizer: React.FC<{
           color: 'rgba(250,250,247,0.82)',
           textShadow: '0 2px 12px rgba(0,0,0,0.75)',
           fontFamily: ybsFontFamily,
-          opacity: cornerOpacity,
+          opacity: 0.78,
         }}
       >
         Yun
