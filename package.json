@@ -10,6 +10,7 @@
   "dependencies": {
     "@remotion/captions": "4.0.535",
     "@remotion/cli": "4.0.535",
+    "@remotion/google-fonts": "4.0.535",
     "@remotion/media": "4.0.535",
     "@remotion/media-utils": "4.0.535",
     "react": "18.3.1",
