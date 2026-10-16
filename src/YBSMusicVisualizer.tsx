@@ -45,10 +45,12 @@ export const YBSMusicVisualizer: React.FC<{
     extrapolateRight: 'clamp',
   });
 
-  const spectrumOpacity = interpolate(seconds, [0, 4, 224, 231.5], [0.25, 1, 1, 0], {
+  const spectrumOpacity = interpolate(seconds, [0, 2.5, 224, 231.5], [0.45, 1, 1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
+
+  const backgroundFilter = `brightness(${0.72 + dawn * 0.48 - bridgeDim}) saturate(${0.9 + dawn * 0.28}) contrast(1.04)`;
 
   return (
     <AbsoluteFill style={{backgroundColor: '#050b12', overflow: 'hidden', fontFamily: ybsFontFamily}}>
@@ -63,7 +65,25 @@ export const YBSMusicVisualizer: React.FC<{
           height: 1160,
           objectFit: 'cover',
           scale: backgroundScale,
-          filter: `brightness(${0.72 + dawn * 0.48 - bridgeDim}) saturate(${0.9 + dawn * 0.28}) contrast(1.04)`,
+          filter: backgroundFilter,
+        }}
+      />
+
+      {/* Blend away the baked-in static ring without creating a visible solid circle. */}
+      <Img
+        src={staticFile('background.png')}
+        style={{
+          position: 'absolute',
+          inset: -70,
+          width: 2060,
+          height: 1220,
+          objectFit: 'cover',
+          scale: backgroundScale * 1.015,
+          filter: `${backgroundFilter} blur(28px)`,
+          WebkitMaskImage:
+            'radial-gradient(circle at 50% 43.5%, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 56%, rgba(0,0,0,0.92) 66%, rgba(0,0,0,0.45) 75%, rgba(0,0,0,0) 86%)',
+          maskImage:
+            'radial-gradient(circle at 50% 43.5%, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 56%, rgba(0,0,0,0.92) 66%, rgba(0,0,0,0.45) 75%, rgba(0,0,0,0) 86%)',
         }}
       />
 
@@ -77,20 +97,6 @@ export const YBSMusicVisualizer: React.FC<{
         style={{
           background: `radial-gradient(circle at 50% 39%, rgba(255,204,142,${dawn * 0.18 + finalBloom}) 0%, rgba(255,185,116,${dawn * 0.07}) 28%, rgba(0,0,0,0) 62%)`,
           mixBlendMode: 'screen',
-        }}
-      />
-
-      {/* Hide the baked-in static spectrum from background.png while preserving the circular visual concept. */}
-      <div
-        style={{
-          position: 'absolute',
-          left: 960 - 335,
-          top: 470 - 335,
-          width: 670,
-          height: 670,
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(8,18,30,0.96) 0%, rgba(8,18,30,0.90) 58%, rgba(8,18,30,0.70) 76%, rgba(8,18,30,0) 100%)',
-          boxShadow: '0 0 80px rgba(0,0,0,0.28) inset',
         }}
       />
 
