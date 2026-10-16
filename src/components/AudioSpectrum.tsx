@@ -1,6 +1,6 @@
 import React from 'react';
 import {staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
-import {useAudioData, visualizeAudio} from '@remotion/media-utils';
+import {useWindowedAudioData, visualizeAudio} from '@remotion/media-utils';
 
 const AUDIO = staticFile('song.wav');
 
@@ -21,7 +21,12 @@ const getSectionBoost = (seconds: number) => {
 export const AudioSpectrum: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const audioData = useAudioData(AUDIO);
+  const {audioData, dataOffsetInSeconds} = useWindowedAudioData({
+    src: AUDIO,
+    frame,
+    fps,
+    windowInSeconds: 8,
+  });
 
   if (!audioData) return null;
 
@@ -30,6 +35,7 @@ export const AudioSpectrum: React.FC = () => {
     frame,
     audioData,
     numberOfSamples: 128,
+    dataOffsetInSeconds,
   });
 
   const seconds = frame / fps;
