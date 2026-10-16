@@ -5,7 +5,8 @@
   "scripts": {
     "start": "remotion studio",
     "studio": "remotion studio",
-    "render": "remotion render src/index.ts YBSMusicVisualizer out/final-vol06.mp4 --codec=h264"
+    "render": "remotion render src/index.ts YBSMusicVisualizer out/final-vol06.mp4 --codec=h264",
+    "render:image": "remotion render src/index.ts YBSMusicVisualizerImage out/final-vol06-image.mp4 --codec=h264"
   },
   "dependencies": {
     "@fontsource/noto-sans-tc": "5.3.1",
