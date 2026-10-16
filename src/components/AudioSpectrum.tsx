@@ -54,14 +54,6 @@ export const AudioSpectrum: React.FC = () => {
           </feMerge>
         </filter>
       </defs>
-      <circle
-        cx={cx}
-        cy={cy}
-        r={baseRadius}
-        fill="rgba(4,12,22,0.18)"
-        stroke="rgba(232,244,255,0.38)"
-        strokeWidth={2}
-      />
       {values.map((v, i) => {
         const angle = (Math.PI * 2 * i) / values.length - Math.PI / 2;
         const amplitude = Math.min(1, v * 2.9 * boost);
