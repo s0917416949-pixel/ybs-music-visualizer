@@ -11,6 +11,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from 'remotion';
+import {ybsFontFamily} from '../fonts';
 
 const isSectionMarker = (text: string) => /^【.*】$/.test(text.trim());
 
@@ -72,7 +73,7 @@ export const Lyrics: React.FC = () => {
         textAlign: 'center',
         opacity,
         translate: `0 ${lift}px`,
-        fontFamily: 'Noto Serif TC, Noto Sans TC, serif',
+        fontFamily: ybsFontFamily,
         fontSize: 48,
         lineHeight: 1.48,
         fontWeight: 600,
