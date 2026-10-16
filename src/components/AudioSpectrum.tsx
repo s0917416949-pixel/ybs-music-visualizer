@@ -3,7 +3,6 @@ import {staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {useWindowedAudioData, visualizeAudio} from '@remotion/media-utils';
 
 const AUDIO = staticFile('song.wav');
-const CENTER_VISUAL = staticFile('center-circle.png');
 
 const getSectionBoost = (seconds: number) => {
   if (seconds < 62) return 0.78;
@@ -43,12 +42,7 @@ export const AudioSpectrum: React.FC = () => {
   const boost = getSectionBoost(seconds);
   const cx = 960;
   const cy = 470;
-
-  // Keep only the animated outer spectrum. The supplied artwork is clipped into
-  // one clean circle inside it, with no extra static spectrum/ring added.
   const baseRadius = 355;
-  const imageRadius = 306;
-  const imageSize = imageRadius * 2;
 
   return (
     <svg
@@ -65,28 +59,13 @@ export const AudioSpectrum: React.FC = () => {
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
-        <clipPath id="centerVisualClip">
-          <circle cx={cx} cy={cy} r={imageRadius} />
-        </clipPath>
       </defs>
-
-      <image
-        href={CENTER_VISUAL}
-        x={cx - imageRadius}
-        y={cy - imageRadius}
-        width={imageSize}
-        height={imageSize}
-        preserveAspectRatio="xMidYMid slice"
-        clipPath="url(#centerVisualClip)"
-      />
 
       {values.map((v, i) => {
         const angle = (Math.PI * 2 * i) / values.length - Math.PI / 2;
         const amplitude = Math.min(1, v * 2.9 * boost);
         const totalLength = 12 + amplitude * 92;
 
-        // Split movement across both sides of the base radius so the visualizer
-        // remains one organic animated ring rather than creating a static inner ring.
         const inner = baseRadius - totalLength * (0.34 + amplitude * 0.08);
         const outer = baseRadius + totalLength * (0.66 - amplitude * 0.08);
 
