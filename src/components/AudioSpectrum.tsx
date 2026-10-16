@@ -42,7 +42,10 @@ export const AudioSpectrum: React.FC = () => {
   const boost = getSectionBoost(seconds);
   const cx = 960;
   const cy = 470;
-  const baseRadius = 300;
+
+  // One large visualizer ring only. Bars straddle the base radius so they do not
+  // create a second crisp inner circle.
+  const baseRadius = 355;
 
   return (
     <svg
@@ -63,14 +66,19 @@ export const AudioSpectrum: React.FC = () => {
       {values.map((v, i) => {
         const angle = (Math.PI * 2 * i) / values.length - Math.PI / 2;
         const amplitude = Math.min(1, v * 2.9 * boost);
-        const length = 10 + amplitude * 96;
-        const inner = baseRadius + 6;
-        const outer = inner + length;
+        const totalLength = 12 + amplitude * 92;
+
+        // Split the movement across both sides of the base radius.
+        // This removes the perfectly uniform inner edge that looked like a small circle.
+        const inner = baseRadius - totalLength * (0.34 + amplitude * 0.08);
+        const outer = baseRadius + totalLength * (0.66 - amplitude * 0.08);
+
         const x1 = cx + Math.cos(angle) * inner;
         const y1 = cy + Math.sin(angle) * inner;
         const x2 = cx + Math.cos(angle) * outer;
         const y2 = cy + Math.sin(angle) * outer;
-        const alpha = 0.28 + amplitude * 0.72;
+        const alpha = 0.26 + amplitude * 0.74;
+
         return (
           <line
             key={i}
@@ -79,7 +87,7 @@ export const AudioSpectrum: React.FC = () => {
             x2={x2}
             y2={y2}
             stroke={`rgba(236,246,255,${alpha})`}
-            strokeWidth={2.3 + amplitude * 2.2}
+            strokeWidth={2.2 + amplitude * 2.4}
             strokeLinecap="round"
             filter="url(#spectrumGlow)"
           />
