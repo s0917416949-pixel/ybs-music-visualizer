@@ -53,12 +53,15 @@ export const YBSMusicVisualizerC: React.FC<{
     extrapolateRight: 'clamp',
   });
 
-  const focusScale = interpolate(seconds, [0, 231.88], [1.17, 1.23], {
+  // Zoom the clean center crop far enough that the spectrum baked into the source
+  // image stays outside the visible circular portrait. Only the LIVE AudioSpectrum
+  // below is allowed to remain visible.
+  const focusScale = interpolate(seconds, [0, 231.88], [1.62, 1.70], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  const focusBrightness = 0.78 + dawn * 0.18 + finalBloom * 0.08 - bridgeDim * 0.10;
+  const focusBrightness = 0.86 + dawn * 0.16 + finalBloom * 0.08 - bridgeDim * 0.10;
 
   return (
     <AbsoluteFill style={{backgroundColor: '#050b12', overflow: 'hidden', fontFamily: ybsFontFamily}}>
@@ -111,8 +114,9 @@ export const YBSMusicVisualizerC: React.FC<{
         }}
       />
 
-      {/* C version: a clearer image sits INSIDE the live spectrum.
-          No border, no SVG circle, no fixed ring. The radial mask feathers the edge. */}
+      {/* C version center portrait: clean image only.
+          The source is zoomed/cropped so its baked-in static spectrum is outside
+          this circle. No border, no fixed ring, no SVG circle. */}
       <div
         style={{
           position: 'absolute',
@@ -122,8 +126,8 @@ export const YBSMusicVisualizerC: React.FC<{
           height: 560,
           overflow: 'hidden',
           borderRadius: '50%',
-          WebkitMaskImage: 'radial-gradient(circle at center, #000 0%, #000 80%, rgba(0,0,0,0.86) 88%, rgba(0,0,0,0.42) 95%, transparent 100%)',
-          maskImage: 'radial-gradient(circle at center, #000 0%, #000 80%, rgba(0,0,0,0.86) 88%, rgba(0,0,0,0.42) 95%, transparent 100%)',
+          WebkitMaskImage: 'radial-gradient(circle at center, #000 0%, #000 68%, rgba(0,0,0,0.96) 76%, rgba(0,0,0,0.72) 84%, rgba(0,0,0,0.30) 92%, transparent 100%)',
+          maskImage: 'radial-gradient(circle at center, #000 0%, #000 68%, rgba(0,0,0,0.96) 76%, rgba(0,0,0,0.72) 84%, rgba(0,0,0,0.30) 92%, transparent 100%)',
         }}
       >
         <Img
@@ -132,13 +136,15 @@ export const YBSMusicVisualizerC: React.FC<{
             width: '100%',
             height: '100%',
             objectFit: 'cover',
+            objectPosition: '50% 50%',
             scale: focusScale,
-            filter: `brightness(${focusBrightness}) saturate(${0.96 + dawn * 0.08}) contrast(1.10)`,
-            opacity: 0.96,
+            filter: `brightness(${focusBrightness}) saturate(${0.98 + dawn * 0.08}) contrast(1.10)`,
+            opacity: 0.98,
           }}
         />
       </div>
 
+      {/* Keep exactly one visible spectrum: the live audio-reactive ring. */}
       <div style={{opacity: spectrumOpacity}}>
         <AudioSpectrum />
       </div>
