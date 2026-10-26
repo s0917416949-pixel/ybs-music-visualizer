@@ -48,7 +48,7 @@ export const YBSMusicVisualizer: React.FC<{
     extrapolateRight: 'clamp',
   });
 
-  const backgroundScale = interpolate(seconds, [0, 259.6], [1.38, 1.46], {
+  const backgroundScale = interpolate(seconds, [0, 259.6], [1.16, 1.22], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
@@ -82,8 +82,8 @@ export const YBSMusicVisualizer: React.FC<{
             height: '100%',
             objectFit: 'cover',
             transform: `translateX(${backgroundX}%) scale(${backgroundScale})`,
-            filter: `blur(24px) brightness(${0.34 + dawn * 0.14 - bridgeDim * 0.05}) saturate(${0.74 + dawn * 0.16}) contrast(1.04)`,
-            opacity: 0.68,
+            filter: `blur(22px) brightness(${0.56 + dawn * 0.12 - bridgeDim * 0.04}) saturate(${0.84 + dawn * 0.12}) contrast(1.03)`,
+            opacity: 0.82,
           }}
         />
       </AbsoluteFill>
@@ -104,9 +104,9 @@ export const YBSMusicVisualizer: React.FC<{
       <AbsoluteFill
         style={{
           background: `linear-gradient(180deg,
-            rgba(0,4,10,${0.18 + bridgeDim * 0.34}) 0%,
-            rgba(0,4,10,0.08) 42%,
-            rgba(0,3,8,0.56) 100%)`,
+            rgba(0,4,10,${0.12 + bridgeDim * 0.24}) 0%,
+            rgba(0,4,10,0.04) 42%,
+            rgba(0,3,8,0.34) 100%)`,
         }}
       />
 
