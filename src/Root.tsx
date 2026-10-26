@@ -5,11 +5,11 @@ import {YBSMusicVisualizerImage} from './YBSMusicVisualizerImage';
 import {YBSMusicVisualizerC} from './YBSMusicVisualizerC';
 
 const FPS = 30;
-const DURATION_SECONDS = 231.88;
+const DURATION_SECONDS = 259.6;
 
 const defaultProps = {
-  title: '後來，我也成為了後來',
-  series: '後來系列 FINAL Vol.06',
+  title: '明天醒來以後',
+  series: '未來系列 Vol.01',
   artist: 'Yun',
 };
 
