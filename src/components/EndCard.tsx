@@ -6,10 +6,10 @@ export const EndCard: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const seconds = frame / fps;
-  const start = 227.2;
+  const start = 249.0;
   if (seconds < start) return null;
 
-  const opacity = interpolate(seconds, [227.2, 228.2, 230.9, 231.8], [0, 1, 1, 0], {
+  const opacity = interpolate(seconds, [249.0, 250.4, 257.2, 259.3], [0, 1, 1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.bezier(0.16, 1, 0.3, 1),
@@ -33,9 +33,9 @@ export const EndCard: React.FC = () => {
       }}
     >
       <div style={{fontSize: 54, lineHeight: 1.55, letterSpacing: '0.08em', fontWeight: 600}}>
-        後來不是終點
+        天亮了
         <br />
-        只是下一段故事開始的地方
+        就再往前走
       </div>
       <div style={{fontSize: 30, letterSpacing: '0.35em', marginTop: 38, opacity: 0.9}}>Yun</div>
     </div>
