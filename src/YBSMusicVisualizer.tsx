@@ -76,14 +76,14 @@ export const YBSMusicVisualizer: React.FC<{
       {/* Blurred background only. This layer must never affect the center artwork. */}
       <AbsoluteFill style={{overflow: 'hidden'}}>
         <Img
-          src={staticFile('center-circle.png')}
+          src={staticFile('background.png')}
           style={{
             width: '100%',
             height: '100%',
             objectFit: 'cover',
             transform: `translateX(${backgroundX}%) scale(${backgroundScale})`,
-            filter: `blur(26px) brightness(${0.25 + dawn * 0.20 - bridgeDim * 0.06}) saturate(${0.72 + dawn * 0.20}) contrast(1.04)`,
-            opacity: 0.70,
+            filter: `blur(24px) brightness(${0.34 + dawn * 0.14 - bridgeDim * 0.05}) saturate(${0.74 + dawn * 0.16}) contrast(1.04)`,
+            opacity: 0.68,
           }}
         />
       </AbsoluteFill>
