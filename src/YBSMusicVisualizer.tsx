@@ -23,37 +23,37 @@ export const YBSMusicVisualizer: React.FC<{
   const {fps} = useVideoConfig();
   const seconds = frame / fps;
 
-  const dawn = interpolate(seconds, [0, 145, 174, 210, 231.8], [0.02, 0.10, 0.22, 0.42, 0.5], {
+  const dawn = interpolate(seconds, [0, 45, 71, 101, 129, 158, 179, 217, 243, 259.6], [0.02, 0.04, 0.07, 0.11, 0.15, 0.20, 0.27, 0.39, 0.47, 0.52], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  const bridgeDim = interpolate(seconds, [145, 155, 164, 174], [0, 0.24, 0.28, 0], {
+  const bridgeDim = interpolate(seconds, [158, 166, 174, 179], [0, 0.16, 0.22, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  const finalBloom = interpolate(seconds, [174, 194, 210], [0, 0.16, 0.32], {
+  const finalBloom = interpolate(seconds, [179, 199, 217, 243], [0, 0.08, 0.23, 0.34], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  const spectrumOpacity = interpolate(seconds, [0, 0.8, 224, 231.5], [0.86, 1, 1, 0], {
+  const spectrumOpacity = interpolate(seconds, [0, 0.8, 248, 259.2], [0.86, 1, 1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  const ambientDrift = interpolate(frame, [0, 231.88 * fps], [-2, 3], {
+  const ambientDrift = interpolate(frame, [0, 259.6 * fps], [-2, 3], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  const backgroundScale = interpolate(seconds, [0, 231.88], [1.12, 1.18], {
+  const backgroundScale = interpolate(seconds, [0, 259.6], [1.38, 1.46], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  const backgroundX = interpolate(seconds, [0, 231.88], [-1.5, 1.5], {
+  const backgroundX = interpolate(seconds, [0, 259.6], [-1.2, 1.2], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
@@ -76,14 +76,14 @@ export const YBSMusicVisualizer: React.FC<{
       {/* Blurred background only. This layer must never affect the center artwork. */}
       <AbsoluteFill style={{overflow: 'hidden'}}>
         <Img
-          src={staticFile('background.png')}
+          src={staticFile('center-circle.png')}
           style={{
             width: '100%',
             height: '100%',
             objectFit: 'cover',
             transform: `translateX(${backgroundX}%) scale(${backgroundScale})`,
-            filter: `blur(22px) brightness(${0.30 + dawn * 0.08 - bridgeDim * 0.08}) saturate(${0.68 + dawn * 0.10}) contrast(1.03)`,
-            opacity: 0.62,
+            filter: `blur(26px) brightness(${0.25 + dawn * 0.20 - bridgeDim * 0.06}) saturate(${0.72 + dawn * 0.20}) contrast(1.04)`,
+            opacity: 0.70,
           }}
         />
       </AbsoluteFill>
@@ -94,8 +94,8 @@ export const YBSMusicVisualizer: React.FC<{
           scale: 1.08,
           background: `linear-gradient(110deg,
             rgba(0,0,0,0) 0%,
-            rgba(255,198,133,${0.018 + dawn * 0.045 + finalBloom * 0.12}) 46%,
-            rgba(218,154,103,${0.025 + dawn * 0.065 + finalBloom * 0.18}) 58%,
+            rgba(255,198,133,${0.012 + dawn * 0.075 + finalBloom * 0.14}) 46%,
+            rgba(218,154,103,${0.018 + dawn * 0.095 + finalBloom * 0.20}) 58%,
             rgba(0,0,0,0) 78%)`,
           mixBlendMode: 'screen',
         }}
