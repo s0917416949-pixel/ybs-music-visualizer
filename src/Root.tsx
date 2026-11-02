@@ -5,11 +5,11 @@ import {YBSMusicVisualizerImage} from './YBSMusicVisualizerImage';
 import {YBSMusicVisualizerC} from './YBSMusicVisualizerC';
 
 const FPS = 30;
-const DURATION_SECONDS = 259.6;
+const DURATION_SECONDS = 259.52;
 
 const defaultProps = {
-  title: '明天醒來以後',
-  series: '未來系列 Vol.01',
+  title: '下一站，我還沒決定',
+  series: '未來系列 Vol.02',
   artist: 'Yun',
 };
 
