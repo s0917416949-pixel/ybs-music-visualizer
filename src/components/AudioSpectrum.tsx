@@ -12,17 +12,18 @@ const average = (values: number[]) => {
 };
 
 const getSectionBoost = (seconds: number) => {
-  if (seconds < 14) return 0.65;
-  if (seconds < 45) return 0.78;
-  if (seconds < 71) return 0.90;
-  if (seconds < 101) return 1.16;
-  if (seconds < 129) return 0.82;
-  if (seconds < 158) return 1.20;
-  if (seconds < 179) return 0.72;
-  if (seconds < 199) return 1.26;
-  if (seconds < 217) return 1.42;
-  if (seconds < 243) return 0.90;
-  return 0.50;
+  if (seconds < 13) return 0.62;
+  if (seconds < 41) return 0.76;
+  if (seconds < 55) return 0.92;
+  if (seconds < 84) return 1.16;
+  if (seconds < 116) return 0.78;
+  if (seconds < 129) return 0.98;
+  if (seconds < 159) return 1.26;
+  if (seconds < 184) return 0.86;
+  if (seconds < 196) return 0.58;
+  if (seconds < 234) return 1.42;
+  if (seconds < 254.3) return 0.82;
+  return 0.46;
 };
 
 export const AudioSpectrum: React.FC = () => {
