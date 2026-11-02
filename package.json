@@ -5,9 +5,9 @@
   "scripts": {
     "start": "remotion studio",
     "studio": "remotion studio",
-    "render": "remotion render src/index.ts YBSMusicVisualizer out/final-vol06.mp4 --codec=h264",
-    "render:image": "remotion render src/index.ts YBSMusicVisualizerImage out/final-vol06-image.mp4 --codec=h264",
-    "render:c": "remotion render src/index.ts YBSMusicVisualizerC out/final-vol06-c.mp4 --codec=h264"
+    "render": "remotion render src/index.ts YBSMusicVisualizer out/future-vol02-next-stop.mp4 --codec=h264",
+    "render:image": "remotion render src/index.ts YBSMusicVisualizerImage out/future-vol02-image.mp4 --codec=h264",
+    "render:c": "remotion render src/index.ts YBSMusicVisualizerC out/future-vol02-c.mp4 --codec=h264"
   },
   "dependencies": {
     "@fontsource/noto-sans-tc": "5.3.1",
