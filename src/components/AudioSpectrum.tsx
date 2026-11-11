@@ -38,7 +38,7 @@ export const AudioSpectrum: React.FC = () => {
     fps,
     frame,
     audioData,
-    numberOfSamples: 128,
+    numberOfSamples: 64,
     dataOffsetInSeconds,
   });
 
@@ -65,7 +65,9 @@ export const AudioSpectrum: React.FC = () => {
         </filter>
       </defs>
 
-      {values.map((v, i) => {
+      {Array.from({length: 128}).map((_, i) => {
+        const mirroredIndex = i < 64 ? i : 127 - i;
+        const v = values[mirroredIndex] ?? 0;
         const angle = (Math.PI * 2 * i) / values.length - Math.PI / 2;
         const amplitude = Math.min(1, v * 3.18 * boost);
         const totalLength = 12 + amplitude * 96;
