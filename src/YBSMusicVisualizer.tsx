@@ -23,57 +23,61 @@ export const YBSMusicVisualizer: React.FC<{
   const {fps} = useVideoConfig();
   const seconds = frame / fps;
 
-  const dawn = interpolate(seconds, [0, 145, 174, 210, 231.8], [0.02, 0.10, 0.22, 0.42, 0.5], {
+  const journeyGlow = interpolate(
+    seconds,
+    [0, 58, 95, 132, 165, 201, 215, 255, 273.67],
+    [0.06, 0.10, 0.14, 0.16, 0.20, 0.18, 0.24, 0.34, 0.30],
+    {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    },
+  );
+
+  const memoryDim = interpolate(seconds, [165, 178, 201, 211, 215], [0, 0.08, 0.18, 0.24, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  const bridgeDim = interpolate(seconds, [145, 155, 164, 174], [0, 0.24, 0.28, 0], {
+  const finalBloom = interpolate(seconds, [211, 215, 235, 255], [0, 0.06, 0.22, 0.30], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  const finalBloom = interpolate(seconds, [174, 194, 210], [0, 0.16, 0.32], {
+  const spectrumOpacity = interpolate(seconds, [0, 0.8, 268.5, 273.35], [0.86, 1, 1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  const spectrumOpacity = interpolate(seconds, [0, 0.8, 224, 231.5], [0.86, 1, 1, 0], {
+  const ambientDrift = interpolate(frame, [0, 273.67 * fps], [-1.5, 2.5], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  const ambientDrift = interpolate(frame, [0, 231.88 * fps], [-2, 3], {
+  const backgroundScale = interpolate(seconds, [0, 273.67], [1.14, 1.19], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  const backgroundScale = interpolate(seconds, [0, 231.88], [1.12, 1.18], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
-
-  const backgroundX = interpolate(seconds, [0, 231.88], [-1.5, 1.5], {
+  const backgroundX = interpolate(seconds, [0, 273.67], [-1.0, 1.8], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
   return (
-    <AbsoluteFill style={{backgroundColor: '#050b12', overflow: 'hidden', fontFamily: ybsFontFamily}}>
+    <AbsoluteFill style={{backgroundColor: '#070912', overflow: 'hidden', fontFamily: ybsFontFamily}}>
       <Audio src={staticFile('song.wav')} />
 
       <AbsoluteFill
         style={{
           background: `linear-gradient(135deg,
-            rgb(${Math.round(4 + dawn * 10)}, ${Math.round(13 + dawn * 12)}, ${Math.round(25 + dawn * 16)}) 0%,
-            rgb(${Math.round(7 + dawn * 13)}, ${Math.round(22 + dawn * 16)}, ${Math.round(37 + dawn * 18)}) 42%,
-            rgb(${Math.round(12 + dawn * 18)}, ${Math.round(25 + dawn * 18)}, ${Math.round(38 + dawn * 15)}) 70%,
-            rgb(${Math.round(4 + dawn * 8)}, ${Math.round(10 + dawn * 8)}, ${Math.round(18 + dawn * 10)}) 100%)`,
-          filter: `brightness(${1 - bridgeDim * 0.55})`,
+            rgb(${Math.round(8 + journeyGlow * 10)}, ${Math.round(9 + journeyGlow * 8)}, ${Math.round(24 + journeyGlow * 14)}) 0%,
+            rgb(${Math.round(15 + journeyGlow * 14)}, ${Math.round(13 + journeyGlow * 10)}, ${Math.round(38 + journeyGlow * 20)}) 42%,
+            rgb(${Math.round(34 + journeyGlow * 24)}, ${Math.round(20 + journeyGlow * 16)}, ${Math.round(44 + journeyGlow * 16)}) 70%,
+            rgb(${Math.round(11 + journeyGlow * 10)}, ${Math.round(8 + journeyGlow * 8)}, ${Math.round(18 + journeyGlow * 8)}) 100%)`,
+          filter: `brightness(${1 - memoryDim * 0.50})`,
         }}
       />
 
-      {/* Blurred background only. This layer must never affect the center artwork. */}
       <AbsoluteFill style={{overflow: 'hidden'}}>
         <Img
           src={staticFile('background.png')}
@@ -82,8 +86,8 @@ export const YBSMusicVisualizer: React.FC<{
             height: '100%',
             objectFit: 'cover',
             transform: `translateX(${backgroundX}%) scale(${backgroundScale})`,
-            filter: `blur(22px) brightness(${0.30 + dawn * 0.08 - bridgeDim * 0.08}) saturate(${0.68 + dawn * 0.10}) contrast(1.03)`,
-            opacity: 0.62,
+            filter: `blur(22px) brightness(${0.40 + journeyGlow * 0.10 - memoryDim * 0.08}) saturate(${0.82 + journeyGlow * 0.12}) contrast(1.04)`,
+            opacity: 0.66,
           }}
         />
       </AbsoluteFill>
@@ -92,11 +96,12 @@ export const YBSMusicVisualizer: React.FC<{
         style={{
           translate: `${ambientDrift}% 0`,
           scale: 1.08,
-          background: `linear-gradient(110deg,
+          background: `linear-gradient(112deg,
             rgba(0,0,0,0) 0%,
-            rgba(255,198,133,${0.018 + dawn * 0.045 + finalBloom * 0.12}) 46%,
-            rgba(218,154,103,${0.025 + dawn * 0.065 + finalBloom * 0.18}) 58%,
-            rgba(0,0,0,0) 78%)`,
+            rgba(145,111,206,${0.018 + journeyGlow * 0.04}) 38%,
+            rgba(255,159,102,${0.020 + journeyGlow * 0.055 + finalBloom * 0.14}) 58%,
+            rgba(255,205,148,${0.012 + finalBloom * 0.10}) 70%,
+            rgba(0,0,0,0) 86%)`,
           mixBlendMode: 'screen',
         }}
       />
@@ -104,14 +109,12 @@ export const YBSMusicVisualizer: React.FC<{
       <AbsoluteFill
         style={{
           background: `linear-gradient(180deg,
-            rgba(0,4,10,${0.18 + bridgeDim * 0.34}) 0%,
-            rgba(0,4,10,0.08) 42%,
-            rgba(0,3,8,0.56) 100%)`,
+            rgba(4,2,14,${0.16 + memoryDim * 0.34}) 0%,
+            rgba(6,3,16,0.06) 42%,
+            rgba(4,3,12,0.54) 100%)`,
         }}
       />
 
-      {/* Independent sharp center artwork. It is intentionally outside the blurred
-          background and outside AudioSpectrum so it stays sharp for the full song. */}
       <Img
         src={staticFile('center-circle.png')}
         style={{
