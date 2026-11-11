@@ -67,8 +67,8 @@ export const AudioSpectrum: React.FC = () => {
 
       {values.map((v, i) => {
         const angle = (Math.PI * 2 * i) / values.length - Math.PI / 2;
-        const amplitude = Math.min(1, v * 2.9 * boost);
-        const totalLength = 12 + amplitude * 92;
+        const amplitude = Math.min(1, v * 3.18 * boost);
+        const totalLength = 12 + amplitude * 96;
 
         const inner = baseRadius - totalLength * (0.34 + amplitude * 0.08);
         const outer = baseRadius + totalLength * (0.66 - amplitude * 0.08);
