@@ -5,16 +5,20 @@ import {useWindowedAudioData, visualizeAudio} from '@remotion/media-utils';
 const AUDIO = staticFile('song.wav');
 
 const getSectionBoost = (seconds: number) => {
-  if (seconds < 62) return 0.78;
-  if (seconds < 96) return 1.0;
-  if (seconds < 115) return 0.82;
-  if (seconds < 145) return 1.08;
-  if (seconds < 164) return 0.62;
-  if (seconds < 169) return 0.72;
-  if (seconds < 174) return 1.02;
-  if (seconds < 194) return 1.12;
-  if (seconds < 210) return 1.28;
-  if (seconds < 228) return 0.72;
+  if (seconds < 16) return 0.52;
+  if (seconds < 45) return 0.70;
+  if (seconds < 58) return 0.88;
+  if (seconds < 95) return 1.12;
+  if (seconds < 123) return 0.74;
+  if (seconds < 132) return 0.90;
+  if (seconds < 165) return 1.16;
+  if (seconds < 167.3) return 0.80;
+  if (seconds < 192) return 1.02;
+  if (seconds < 201) return 1.12;
+  if (seconds < 209.5) return 0.66;
+  if (seconds < 214.3) return 0.92;
+  if (seconds < 255) return 1.34;
+  if (seconds < 271.5) return 0.76;
   return 0.42;
 };
 
@@ -25,7 +29,7 @@ export const AudioSpectrum: React.FC = () => {
     src: AUDIO,
     frame,
     fps,
-    windowInSeconds: 8,
+    windowInSeconds: 6,
   });
 
   if (!audioData) return null;
