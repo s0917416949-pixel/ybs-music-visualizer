@@ -33,9 +33,9 @@ export const EndCard: React.FC = () => {
       }}
     >
       <div style={{fontSize: 54, lineHeight: 1.55, letterSpacing: '0.08em', fontWeight: 600}}>
-        身體往前
+        人正在向前走
         <br />
-        視線偶爾往後
+        偶爾回頭看一眼
       </div>
       <div style={{fontSize: 30, letterSpacing: '0.35em', marginTop: 38, opacity: 0.9}}>Yun</div>
     </div>
