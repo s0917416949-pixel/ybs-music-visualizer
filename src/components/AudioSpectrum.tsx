@@ -38,7 +38,7 @@ export const AudioSpectrum: React.FC = () => {
     fps,
     frame,
     audioData,
-    numberOfSamples: 64,
+    numberOfSamples: 96,
     dataOffsetInSeconds,
   });
 
@@ -65,10 +65,10 @@ export const AudioSpectrum: React.FC = () => {
         </filter>
       </defs>
 
-      {Array.from({length: 128}).map((_, i) => {
-        const mirroredIndex = i < 64 ? i : 127 - i;
+      {Array.from({length: 192}).map((_, i) => {
+        const mirroredIndex = i < 96 ? i : 191 - i;
         const v = values[mirroredIndex] ?? 0;
-        const angle = (Math.PI * 2 * i) / values.length - Math.PI / 2;
+        const angle = (Math.PI * 2 * i) / 192 - Math.PI / 2;
         const amplitude = Math.min(1, v * 3.18 * boost);
         const totalLength = 12 + amplitude * 96;
 
@@ -89,7 +89,7 @@ export const AudioSpectrum: React.FC = () => {
             x2={x2}
             y2={y2}
             stroke={`rgba(236,246,255,${alpha})`}
-            strokeWidth={2.2 + amplitude * 2.4}
+            strokeWidth={1.9 + amplitude * 2.1}
             strokeLinecap="round"
             filter="url(#spectrumGlow)"
           />
