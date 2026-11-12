@@ -70,7 +70,7 @@ export const AudioSpectrum: React.FC = () => {
         const v = values[mirroredIndex] ?? 0;
         const angle = (Math.PI * 2 * i) / 256 - Math.PI / 2;
         const amplitude = Math.min(1, v * 3.18 * boost);
-        const totalLength = 12 + amplitude * 96;
+        const totalLength = 14 + amplitude * 112;
 
         const inner = baseRadius - totalLength * (0.34 + amplitude * 0.08);
         const outer = baseRadius + totalLength * (0.66 - amplitude * 0.08);
