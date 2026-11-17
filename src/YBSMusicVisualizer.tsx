@@ -23,61 +23,69 @@ export const YBSMusicVisualizer: React.FC<{
   const {fps} = useVideoConfig();
   const seconds = frame / fps;
 
-  const journeyGlow = interpolate(
+  // Vol.04 moves from quiet reflection toward warmer understanding.
+  const understandingGlow = interpolate(
     seconds,
-    [0, 58, 95, 132, 165, 201, 215, 255, 273.67],
-    [0.06, 0.10, 0.14, 0.16, 0.20, 0.18, 0.24, 0.34, 0.30],
+    [0, 44, 58, 90, 120, 133, 163, 180, 198, 232, 257.2],
+    [0.07, 0.09, 0.15, 0.19, 0.14, 0.20, 0.23, 0.15, 0.25, 0.38, 0.30],
     {
       extrapolateLeft: 'clamp',
       extrapolateRight: 'clamp',
     },
   );
 
-  const memoryDim = interpolate(seconds, [165, 178, 201, 211, 215], [0, 0.08, 0.18, 0.24, 0], {
+  const reflectionDim = interpolate(
+    seconds,
+    [160, 166, 180, 196, 198],
+    [0, 0.12, 0.18, 0.24, 0],
+    {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    },
+  );
+
+  const finalBloom = interpolate(seconds, [196, 198, 218, 232], [0, 0.06, 0.24, 0.34], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  const finalBloom = interpolate(seconds, [211, 215, 235, 255], [0, 0.06, 0.22, 0.30], {
+  const spectrumOpacity = interpolate(seconds, [0, 0.8, 250.0, 257.0], [0.86, 1, 1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  const spectrumOpacity = interpolate(seconds, [0, 0.8, 268.5, 273.35], [0.86, 1, 1, 0], {
+  const ambientDrift = interpolate(frame, [0, 257.2 * fps], [-1.2, 1.8], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  const ambientDrift = interpolate(frame, [0, 273.67 * fps], [-1.5, 2.5], {
+  const backgroundScale = interpolate(seconds, [0, 257.2], [1.12, 1.17], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
-  const backgroundScale = interpolate(seconds, [0, 273.67], [1.14, 1.19], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  });
-
-  const backgroundX = interpolate(seconds, [0, 273.67], [-1.0, 1.8], {
+  const backgroundX = interpolate(seconds, [0, 257.2], [-0.8, 1.4], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   });
 
   return (
-    <AbsoluteFill style={{backgroundColor: '#070912', overflow: 'hidden', fontFamily: ybsFontFamily}}>
+    <AbsoluteFill style={{backgroundColor: '#0c1018', overflow: 'hidden', fontFamily: ybsFontFamily}}>
       <Audio src={staticFile('song.wav')} />
 
+      {/* Warm dusk / cool shadow foundation */}
       <AbsoluteFill
         style={{
           background: `linear-gradient(135deg,
-            rgb(${Math.round(8 + journeyGlow * 10)}, ${Math.round(9 + journeyGlow * 8)}, ${Math.round(24 + journeyGlow * 14)}) 0%,
-            rgb(${Math.round(15 + journeyGlow * 14)}, ${Math.round(13 + journeyGlow * 10)}, ${Math.round(38 + journeyGlow * 20)}) 42%,
-            rgb(${Math.round(34 + journeyGlow * 24)}, ${Math.round(20 + journeyGlow * 16)}, ${Math.round(44 + journeyGlow * 16)}) 70%,
-            rgb(${Math.round(11 + journeyGlow * 10)}, ${Math.round(8 + journeyGlow * 8)}, ${Math.round(18 + journeyGlow * 8)}) 100%)`,
-          filter: `brightness(${1 - memoryDim * 0.50})`,
+            rgb(${Math.round(10 + understandingGlow * 12)}, ${Math.round(15 + understandingGlow * 12)}, ${Math.round(25 + understandingGlow * 16)}) 0%,
+            rgb(${Math.round(18 + understandingGlow * 18)}, ${Math.round(24 + understandingGlow * 15)}, ${Math.round(35 + understandingGlow * 12)}) 42%,
+            rgb(${Math.round(50 + understandingGlow * 52)}, ${Math.round(35 + understandingGlow * 35)}, ${Math.round(30 + understandingGlow * 22)}) 72%,
+            rgb(${Math.round(15 + understandingGlow * 12)}, ${Math.round(15 + understandingGlow * 10)}, ${Math.round(20 + understandingGlow * 8)}) 100%)`,
+          filter: `brightness(${1 - reflectionDim * 0.46})`,
         }}
       />
 
+      {/* Blurred story layer */}
       <AbsoluteFill style={{overflow: 'hidden'}}>
         <Img
           src={staticFile('background.png')}
@@ -86,32 +94,34 @@ export const YBSMusicVisualizer: React.FC<{
             height: '100%',
             objectFit: 'cover',
             transform: `translateX(${backgroundX}%) scale(${backgroundScale})`,
-            filter: `blur(22px) brightness(${0.40 + journeyGlow * 0.10 - memoryDim * 0.08}) saturate(${0.82 + journeyGlow * 0.12}) contrast(1.04)`,
-            opacity: 0.66,
+            filter: `blur(20px) brightness(${0.42 + understandingGlow * 0.10 - reflectionDim * 0.08}) saturate(${0.78 + understandingGlow * 0.16}) contrast(1.04)`,
+            opacity: 0.68,
           }}
         />
       </AbsoluteFill>
 
+      {/* Slow amber light drifting through the frame */}
       <AbsoluteFill
         style={{
           translate: `${ambientDrift}% 0`,
           scale: 1.08,
           background: `linear-gradient(112deg,
             rgba(0,0,0,0) 0%,
-            rgba(145,111,206,${0.018 + journeyGlow * 0.04}) 38%,
-            rgba(255,159,102,${0.020 + journeyGlow * 0.055 + finalBloom * 0.14}) 58%,
-            rgba(255,205,148,${0.012 + finalBloom * 0.10}) 70%,
-            rgba(0,0,0,0) 86%)`,
+            rgba(110,142,170,${0.014 + understandingGlow * 0.026}) 32%,
+            rgba(214,157,102,${0.020 + understandingGlow * 0.060 + finalBloom * 0.12}) 56%,
+            rgba(255,207,150,${0.014 + understandingGlow * 0.044 + finalBloom * 0.13}) 70%,
+            rgba(0,0,0,0) 88%)`,
           mixBlendMode: 'screen',
         }}
       />
 
+      {/* Bridge and FINAL-before become quieter before the last chorus opens. */}
       <AbsoluteFill
         style={{
           background: `linear-gradient(180deg,
-            rgba(4,2,14,${0.16 + memoryDim * 0.34}) 0%,
-            rgba(6,3,16,0.06) 42%,
-            rgba(4,3,12,0.54) 100%)`,
+            rgba(6,10,18,${0.13 + reflectionDim * 0.34}) 0%,
+            rgba(8,10,16,0.04) 43%,
+            rgba(7,8,13,0.48) 100%)`,
         }}
       />
 
@@ -125,7 +135,7 @@ export const YBSMusicVisualizer: React.FC<{
           height: 612,
           objectFit: 'cover',
           borderRadius: '50%',
-          filter: 'none',
+          filter: `brightness(${0.98 + finalBloom * 0.08}) saturate(${0.98 + understandingGlow * 0.08})`,
           opacity: 1,
         }}
       />
@@ -143,7 +153,7 @@ export const YBSMusicVisualizer: React.FC<{
           left: 58,
           fontSize: 20,
           letterSpacing: '0.14em',
-          color: 'rgba(245,247,248,0.62)',
+          color: 'rgba(247,244,236,0.64)',
           textShadow: '0 2px 12px rgba(0,0,0,0.75)',
           fontFamily: ybsFontFamily,
           opacity: 0.72,
@@ -160,7 +170,7 @@ export const YBSMusicVisualizer: React.FC<{
           fontSize: 22,
           fontWeight: 700,
           letterSpacing: '0.24em',
-          color: 'rgba(250,250,247,0.82)',
+          color: 'rgba(250,247,239,0.84)',
           textShadow: '0 2px 12px rgba(0,0,0,0.75)',
           fontFamily: ybsFontFamily,
           opacity: 0.78,
