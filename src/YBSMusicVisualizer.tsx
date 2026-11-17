@@ -125,20 +125,31 @@ export const YBSMusicVisualizer: React.FC<{
         }}
       />
 
-      <Img
-        src={staticFile('center-circle.png')}
+      <div
         style={{
           position: 'absolute',
           left: 654,
           top: 164,
           width: 612,
           height: 612,
-          objectFit: 'cover',
           borderRadius: '50%',
-          filter: `brightness(${0.98 + finalBloom * 0.08}) saturate(${0.98 + understandingGlow * 0.08})`,
-          opacity: 1,
+          overflow: 'hidden',
+          backgroundColor: '#10151d',
+          boxShadow: 'inset 0 0 0 2px rgba(10,14,22,0.55)',
         }}
-      />
+      >
+        <Img
+          src={staticFile('center-circle.png')}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            transform: 'scale(1.015)',
+            filter: `brightness(${0.98 + finalBloom * 0.08}) saturate(${0.98 + understandingGlow * 0.08})`,
+            display: 'block',
+          }}
+        />
+      </div>
 
       <div style={{opacity: spectrumOpacity}}>
         <AudioSpectrum />
