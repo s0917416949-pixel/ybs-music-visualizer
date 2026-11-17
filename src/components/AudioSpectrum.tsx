@@ -27,6 +27,7 @@ const average = (values: number[]) => {
 export const AudioSpectrum: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
+
   const {audioData, dataOffsetInSeconds} = useWindowedAudioData({
     src: AUDIO,
     frame,
@@ -69,27 +70,19 @@ export const AudioSpectrum: React.FC = () => {
       </defs>
 
       {Array.from({length: 256}).map((_, i) => {
-        const quarter = Math.floor(i / 64);
-        const positionInQuarter = i % 64;
-        const progress = positionInQuarter / 63;
-        const fullRangeIndex = Math.round(progress * 127);
-        const shiftedIndex = (fullRangeIndex + quarter * 13) % 128;
-        const spectralIndex = quarter % 2 === 0 ? shiftedIndex : 127 - shiftedIndex;
+        const mirroredIndex = i < 128 ? i : 255 - i;
+        const local = values[mirroredIndex] ?? 0;
 
-        const prev = values[(spectralIndex + 127) % 128] ?? 0;
-        const current = values[spectralIndex] ?? 0;
-        const next = values[(spectralIndex + 1) % 128] ?? 0;
-        const localEnergy = (prev + current * 2 + next) / 4;
-
-        // Vol.04 spectrum 2.0:
-        // every quadrant receives the full frequency range, while a small
-        // global-energy layer keeps the whole circle breathing together.
-        const reactiveEnergy = localEnergy * 0.74 + globalEnergy * 0.26;
-        const baseBreath = Math.min(0.22, globalEnergy * 1.55 * boost);
-        const amplitude = Math.min(1, Math.max(baseBreath, reactiveEnergy * 3.12 * boost));
+        const reactiveEnergy = local * 0.78 + globalEnergy * 0.22;
+        const baseBreath = Math.min(0.18, globalEnergy * 1.45 * boost);
+        const amplitude = Math.min(
+          1,
+          Math.max(baseBreath, reactiveEnergy * 3.12 * boost),
+        );
 
         const angle = (Math.PI * 2 * i) / 256 - Math.PI / 2;
         const totalLength = 16 + amplitude * 136;
+
         const inner = baseRadius - totalLength * (0.34 + amplitude * 0.08);
         const outer = baseRadius + totalLength * (0.66 - amplitude * 0.08);
 
@@ -97,6 +90,7 @@ export const AudioSpectrum: React.FC = () => {
         const y1 = cy + Math.sin(angle) * inner;
         const x2 = cx + Math.cos(angle) * outer;
         const y2 = cy + Math.sin(angle) * outer;
+
         const alpha = 0.26 + amplitude * 0.74;
 
         return (
