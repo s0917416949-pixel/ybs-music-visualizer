@@ -80,18 +80,19 @@ export const AudioSpectrum: React.FC = () => {
         // introducing hard quadrant seams or changing the radial bar angles.
         const groupSize = 5;
         const groupIndex = Math.floor(i / groupSize);
-        const cyclePosition = (i % 128) / 127;
-        const baseIndex = Math.round(cyclePosition * 127);
+        const withinGroup = i % groupSize;
 
-        // Every ~5 bars gets a tiny frequency offset.
-        // This keeps the ring coherent but prevents perfectly mirrored motion.
-        const phaseOffset = (groupIndex % 7) - 3;
-        const spectralIndex = (baseIndex + phaseOffset * 2 + 128) % 128;
+        // Scatter frequency bins around the whole ring instead of mapping them
+        // sequentially from top to bottom. 29 is coprime with 128, so every
+        // group walks through a different part of the spectrum before repeating.
+        const baseIndex = (groupIndex * 29 + withinGroup * 7) % 128;
 
-        const local = values[spectralIndex] ?? 0;
-        const next = values[(spectralIndex + 4) % 128] ?? 0;
-        const prev = values[(spectralIndex + 124) % 128] ?? 0;
-        const localSmooth = (prev + local * 2 + next) / 4;
+        // Blend three separated bins so each area of the circle can react to
+        // low/mid/high energy, not just whichever quiet band lands there.
+        const a = values[baseIndex] ?? 0;
+        const b = values[(baseIndex + 43) % 128] ?? 0;
+        const d = values[(baseIndex + 86) % 128] ?? 0;
+        const localEnergy = Math.max(a, b * 0.88, d * 0.76);
 
         const angle = (Math.PI * 2 * i) / 256 - Math.PI / 2;
 
@@ -108,11 +109,13 @@ export const AudioSpectrum: React.FC = () => {
 
         const microPulse = 0.94 + ((groupIndex % 5) * 0.025);
 
+        const groupPulse = 0.92 + ((groupIndex % 6) * 0.022);
+
         const reactiveEnergy =
-          (localSmooth * 0.60 +
-            bandBreath * 0.22 +
-            globalEnergy * 0.18) *
-          microPulse;
+          (localEnergy * 0.66 +
+            bandBreath * 0.18 +
+            globalEnergy * 0.16) *
+          groupPulse;
 
         const baseBreath = Math.min(0.22, globalEnergy * 1.70 * boost);
         const amplitude = Math.min(
