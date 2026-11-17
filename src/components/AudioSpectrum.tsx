@@ -78,12 +78,19 @@ export const AudioSpectrum: React.FC = () => {
         // Smoothly cycle the usable spectrum around the circle twice.
         // This spreads low/mid/high energy across all four directions without
         // introducing hard quadrant seams or changing the radial bar angles.
+        const groupSize = 5;
+        const groupIndex = Math.floor(i / groupSize);
         const cyclePosition = (i % 128) / 127;
-        const spectralIndex = Math.round(cyclePosition * 127);
+        const baseIndex = Math.round(cyclePosition * 127);
+
+        // Every ~5 bars gets a tiny frequency offset.
+        // This keeps the ring coherent but prevents perfectly mirrored motion.
+        const phaseOffset = (groupIndex % 7) - 3;
+        const spectralIndex = (baseIndex + phaseOffset * 2 + 128) % 128;
 
         const local = values[spectralIndex] ?? 0;
-        const next = values[(spectralIndex + 5) % 128] ?? 0;
-        const prev = values[(spectralIndex + 123) % 128] ?? 0;
+        const next = values[(spectralIndex + 4) % 128] ?? 0;
+        const prev = values[(spectralIndex + 124) % 128] ?? 0;
         const localSmooth = (prev + local * 2 + next) / 4;
 
         const angle = (Math.PI * 2 * i) / 256 - Math.PI / 2;
@@ -99,10 +106,13 @@ export const AudioSpectrum: React.FC = () => {
           midEnergy * midWeight +
           highEnergy * highWeight;
 
+        const microPulse = 0.94 + ((groupIndex % 5) * 0.025);
+
         const reactiveEnergy =
-          localSmooth * 0.60 +
-          bandBreath * 0.22 +
-          globalEnergy * 0.18;
+          (localSmooth * 0.60 +
+            bandBreath * 0.22 +
+            globalEnergy * 0.18) *
+          microPulse;
 
         const baseBreath = Math.min(0.22, globalEnergy * 1.70 * boost);
         const amplitude = Math.min(
