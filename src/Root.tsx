@@ -5,11 +5,11 @@ import {YBSMusicVisualizerImage} from './YBSMusicVisualizerImage';
 import {YBSMusicVisualizerC} from './YBSMusicVisualizerC';
 
 const FPS = 30;
-const DURATION_SECONDS = 273.67;
+const DURATION_SECONDS = 257.2;
 
 const defaultProps = {
-  title: '走遠以後，再回頭看一眼',
-  series: '未來系列 Vol.03',
+  title: '有些答案 要走遠以後才看得見',
+  series: '未來系列 Vol.04',
   artist: 'Yun',
 };
 
