@@ -48,6 +48,11 @@ export const AudioSpectrum: React.FC = () => {
   const seconds = frame / fps;
   const boost = getSectionBoost(seconds);
   const globalEnergy = average(values);
+
+  const lowEnergy = average(values.slice(0, 24));
+  const midEnergy = average(values.slice(24, 72));
+  const highEnergy = average(values.slice(72, 128));
+
   const cx = 960;
   const cy = 470;
   const baseRadius = 355;
@@ -70,18 +75,43 @@ export const AudioSpectrum: React.FC = () => {
       </defs>
 
       {Array.from({length: 256}).map((_, i) => {
-        const mirroredIndex = i < 128 ? i : 255 - i;
-        const local = values[mirroredIndex] ?? 0;
+        // Smoothly cycle the usable spectrum around the circle twice.
+        // This spreads low/mid/high energy across all four directions without
+        // introducing hard quadrant seams or changing the radial bar angles.
+        const cyclePosition = (i % 128) / 127;
+        const spectralIndex = Math.round(cyclePosition * 127);
 
-        const reactiveEnergy = local * 0.78 + globalEnergy * 0.22;
-        const baseBreath = Math.min(0.18, globalEnergy * 1.45 * boost);
-        const amplitude = Math.min(
-          1,
-          Math.max(baseBreath, reactiveEnergy * 3.12 * boost),
-        );
+        const local = values[spectralIndex] ?? 0;
+        const next = values[(spectralIndex + 5) % 128] ?? 0;
+        const prev = values[(spectralIndex + 123) % 128] ?? 0;
+        const localSmooth = (prev + local * 2 + next) / 4;
 
         const angle = (Math.PI * 2 * i) / 256 - Math.PI / 2;
-        const totalLength = 16 + amplitude * 136;
+
+        // Gentle frequency-band rotation around the circle so no quadrant
+        // depends only on quiet high frequencies.
+        const phase = angle + Math.PI / 2;
+        const lowWeight = 0.30 + 0.18 * (0.5 + 0.5 * Math.sin(phase));
+        const midWeight = 0.28 + 0.16 * (0.5 + 0.5 * Math.sin(phase + 2.1));
+        const highWeight = 0.12 + 0.08 * (0.5 + 0.5 * Math.sin(phase + 4.2));
+        const bandBreath =
+          lowEnergy * lowWeight +
+          midEnergy * midWeight +
+          highEnergy * highWeight;
+
+        const reactiveEnergy =
+          localSmooth * 0.60 +
+          bandBreath * 0.22 +
+          globalEnergy * 0.18;
+
+        const baseBreath = Math.min(0.22, globalEnergy * 1.70 * boost);
+        const amplitude = Math.min(
+          1,
+          Math.max(baseBreath, reactiveEnergy * 3.35 * boost),
+        );
+
+        // Slightly longer than the previous Vol.04 pass.
+        const totalLength = 18 + amplitude * 154;
 
         const inner = baseRadius - totalLength * (0.34 + amplitude * 0.08);
         const outer = baseRadius + totalLength * (0.66 - amplitude * 0.08);
@@ -91,7 +121,7 @@ export const AudioSpectrum: React.FC = () => {
         const x2 = cx + Math.cos(angle) * outer;
         const y2 = cy + Math.sin(angle) * outer;
 
-        const alpha = 0.26 + amplitude * 0.74;
+        const alpha = 0.28 + amplitude * 0.72;
 
         return (
           <line
