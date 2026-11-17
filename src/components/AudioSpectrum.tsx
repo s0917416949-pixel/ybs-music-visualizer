@@ -5,21 +5,23 @@ import {useWindowedAudioData, visualizeAudio} from '@remotion/media-utils';
 const AUDIO = staticFile('song.wav');
 
 const getSectionBoost = (seconds: number) => {
-  if (seconds < 16) return 0.52;
-  if (seconds < 45) return 0.70;
-  if (seconds < 58) return 0.88;
-  if (seconds < 95) return 1.12;
-  if (seconds < 123) return 0.74;
-  if (seconds < 132) return 0.90;
-  if (seconds < 165) return 1.16;
-  if (seconds < 167.3) return 0.80;
-  if (seconds < 192) return 1.02;
-  if (seconds < 201) return 1.12;
-  if (seconds < 209.5) return 0.66;
-  if (seconds < 214.3) return 0.92;
-  if (seconds < 255) return 1.34;
-  if (seconds < 271.5) return 0.76;
-  return 0.42;
+  if (seconds < 15.9) return 0.54;
+  if (seconds < 44.4) return 0.72;
+  if (seconds < 57.8) return 0.90;
+  if (seconds < 90.5) return 1.12;
+  if (seconds < 119.8) return 0.76;
+  if (seconds < 133.3) return 0.92;
+  if (seconds < 163.0) return 1.16;
+  if (seconds < 180.2) return 0.78;
+  if (seconds < 198.1) return 0.72;
+  if (seconds < 231.7) return 1.30;
+  if (seconds < 245.5) return 0.80;
+  return 0.46;
+};
+
+const average = (values: number[]) => {
+  if (values.length === 0) return 0;
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
 };
 
 export const AudioSpectrum: React.FC = () => {
@@ -29,7 +31,7 @@ export const AudioSpectrum: React.FC = () => {
     src: AUDIO,
     frame,
     fps,
-    windowInSeconds: 6,
+    windowInSeconds: 5,
   });
 
   if (!audioData) return null;
@@ -44,6 +46,7 @@ export const AudioSpectrum: React.FC = () => {
 
   const seconds = frame / fps;
   const boost = getSectionBoost(seconds);
+  const globalEnergy = average(values);
   const cx = 960;
   const cy = 470;
   const baseRadius = 355;
@@ -66,12 +69,27 @@ export const AudioSpectrum: React.FC = () => {
       </defs>
 
       {Array.from({length: 256}).map((_, i) => {
-        const mirroredIndex = i < 128 ? i : 255 - i;
-        const v = values[mirroredIndex] ?? 0;
-        const angle = (Math.PI * 2 * i) / 256 - Math.PI / 2;
-        const amplitude = Math.min(1, v * 3.18 * boost);
-        const totalLength = 16 + amplitude * 136;
+        const quarter = Math.floor(i / 64);
+        const positionInQuarter = i % 64;
+        const progress = positionInQuarter / 63;
+        const fullRangeIndex = Math.round(progress * 127);
+        const shiftedIndex = (fullRangeIndex + quarter * 13) % 128;
+        const spectralIndex = quarter % 2 === 0 ? shiftedIndex : 127 - shiftedIndex;
 
+        const prev = values[(spectralIndex + 127) % 128] ?? 0;
+        const current = values[spectralIndex] ?? 0;
+        const next = values[(spectralIndex + 1) % 128] ?? 0;
+        const localEnergy = (prev + current * 2 + next) / 4;
+
+        // Vol.04 spectrum 2.0:
+        // every quadrant receives the full frequency range, while a small
+        // global-energy layer keeps the whole circle breathing together.
+        const reactiveEnergy = localEnergy * 0.74 + globalEnergy * 0.26;
+        const baseBreath = Math.min(0.22, globalEnergy * 1.55 * boost);
+        const amplitude = Math.min(1, Math.max(baseBreath, reactiveEnergy * 3.12 * boost));
+
+        const angle = (Math.PI * 2 * i) / 256 - Math.PI / 2;
+        const totalLength = 16 + amplitude * 136;
         const inner = baseRadius - totalLength * (0.34 + amplitude * 0.08);
         const outer = baseRadius + totalLength * (0.66 - amplitude * 0.08);
 
@@ -88,7 +106,7 @@ export const AudioSpectrum: React.FC = () => {
             y1={y1}
             x2={x2}
             y2={y2}
-            stroke={`rgba(236,246,255,${alpha})`}
+            stroke={`rgba(244,244,238,${alpha})`}
             strokeWidth={1.9 + amplitude * 2.1}
             strokeLinecap="round"
             filter="url(#spectrumGlow)"
